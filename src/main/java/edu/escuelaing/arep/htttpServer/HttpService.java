@@ -151,6 +151,7 @@ public class HttpService {
             paginaNoEncontrada();
             System.err.println("Error: No se pudo obtener la imagen solicitada.");
         }
+        
     }
 
     private void postApplicacion() throws IOException {
