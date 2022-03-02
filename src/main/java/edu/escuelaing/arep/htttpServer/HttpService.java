@@ -31,7 +31,7 @@ public class HttpService {
         }
     }
 
-    private ServerSocket runServer() {
+    public static ServerSocket runServer() {
         ServerSocket serverSocket = null;
         try {
             serverSocket = new ServerSocket(getPort());
@@ -55,7 +55,7 @@ public class HttpService {
         return request;
     }
 
-    private int getPort() {
+    public static int getPort() {
         if (System.getenv("PORT") != null) {
             return Integer.parseInt(System.getenv("PORT"));
         }
