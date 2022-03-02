@@ -51,8 +51,6 @@ entregar su trabajo al final del laboratorio.
 
 `$ cd Lab4_Arep_DeividMedina`
 
-![Imagen7.png](https://i.postimg.cc/ZKnx2CZN/Imagen7.png)
-
 ### DESPLEGANDO API EN HEROKU.
 
 [![ProjectDesign](https://www.herokucdn.com/deploy/button.png)](https://labcuatroarep.herokuapp.com/)
