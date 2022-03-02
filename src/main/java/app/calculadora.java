@@ -5,7 +5,7 @@ import edu.escuelaing.arep.htttpServer.Web;
 public class calculadora {
 
     @Web("resultadoSuma")
-    public static String resultadoSumallamar(String valorUno){
+    public static String resultadoSumallamar(String valorUno, int valorDos){
         return"<!DOCTYPE html>\n"
                 +"<html>\n"
                 +"<head>\n"
@@ -13,7 +13,7 @@ public class calculadora {
                 +"  <title>Proyecto AREM</title>  \n"
                 +"</head>\n"
                 +"<body style=\"text-align: center\">   \n"
-                + "<h1>Resultado de la Suma de: "+valorUno+" + segundo número es igual a:   </h1>"
+                + "<h1>Resultado de la Suma de: "+valorUno+" + "+valorDos+" es igual a:   </h1>"
                 +"</body>\n"
                 +"</html>\n"
                 +"";
@@ -30,7 +30,10 @@ public class calculadora {
                 +"<body style=\"text-align: center\">   \n"
                 + "<h1>Calculadora que suma dos números </h1>"
                 +"<form action=\"/app/resultadoSuma\">	\n"
-                + "  <input id='calculadoraId' type='number' name='primernumero' class='form-control' placeholder='Ingrese el número a sumar' >"
+                + "  <input id='calculadoraIdnumeroUno' type='number' name='primernumero' class='form-control' placeholder='Ingrese el primer número a sumar' >"
+                + "<br>"
+                + "  <input id='calculadoraIdnumeroDos' type='number' name='segundonumero' class='form-control' placeholder='Ingrese el segundo número a sumar' >"
+                + "<br>"
                 + "  <input id='calculadora_button_id' type='submit' value='Realizar la suma' class='btns'>"
                 +"</form>"
                 +"</body>\n"
