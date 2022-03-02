@@ -1,15 +1,16 @@
 package edu.escuelaing.arep.htttpServer;
 
+import org.reflections.Reflections;
+
 import java.io.*;
 import java.lang.reflect.Method;
 import java.net.MalformedURLException;
 import java.net.ServerSocket;
 import java.net.Socket;
-import org.reflections.Reflections;
 import java.util.HashMap;
 import java.util.Set;
 
-public class HttpServerWithThread {
+public class HttpService {
     private static Socket socketCliente;
     private static HashMap<String, Handler> listaURLHandler;
     private static ServerSocket socketServer = null;
@@ -17,23 +18,48 @@ public class HttpServerWithThread {
     private Socket receptor;
     private static String direccion = "";
 
-    public HttpServerWithThread(Socket receptor){
-        this.receptor = receptor;
-    }
 
-    public void run(){
-        try {
+    public void listen() throws Exception{
+        while (true){
+            socketServer = runServer();
+            receptor = recibiendoSolicitud(socketServer);
             empezarAEscuchar();
             leyendoTipodeSolicitud(receptor);
-            cerrarConexion();
-        } catch (IOException e) {
-            e.printStackTrace();
+            in.close();
+            receptor.close();
+            socketServer.close();
         }
     }
 
-    private void cerrarConexion() throws IOException {
-        in.close();
-        receptor.close();
+    private ServerSocket runServer() {
+        ServerSocket serverSocket = null;
+        try {
+            serverSocket = new ServerSocket(getPort());
+        } catch (IOException e) {
+            System.err.println("Could not listen on port: " + getPort());
+            System.exit(1);
+        }
+        return serverSocket;
+    }
+
+    public static Socket recibiendoSolicitud(ServerSocket serverSocket) {
+
+        Socket request = null;
+        try {
+            System.out.println("Ready to receive...");
+            request = serverSocket.accept();
+        } catch (IOException e) {
+            System.err.println("Accept failed.");
+            System.exit(1);
+        }
+        return request;
+    }
+
+    private int getPort() {
+        if (System.getenv("PORT") != null) {
+            return Integer.parseInt(System.getenv("PORT"));
+        }
+        return 4567; //returns default port if heroku-port isn't set (i.e. on localhost)
     }
 
     private void leyendoTipodeSolicitud(Socket recep) throws IOException {
@@ -82,8 +108,8 @@ public class HttpServerWithThread {
         try{
             String outputLine;
             String page = "HTTP/1.1 200 OK\r\n"
-                         + "Content-Type: text/html\r\n"
-                         + "\r\n" + leerHTML("/paginaNoEncontrada.html");
+                    + "Content-Type: text/html\r\n"
+                    + "\r\n" + leerHTML("/paginaNoEncontrada.html");
             outputLine = page;  //Guardando Html
             PrintWriter out = new PrintWriter(socketCliente.getOutputStream(), true); //Imprimir objeto en una secuencia como una salida de texto
             out.println(outputLine); //Imprimir Pagina html
@@ -175,55 +201,7 @@ public class HttpServerWithThread {
         }
     }
 
-    public static int getPort() {
-        if (System.getenv("PORT") != null) {
-            return Integer.parseInt(System.getenv("PORT"));
-        }
-        return 4567; //returns default port if heroku-port isn't set (i.e. on localhost)
-    }
-
-    public static ServerSocket runServer() {
-
-        ServerSocket serverSocket = null;
-        try {
-            serverSocket = new ServerSocket(getPort());
-        } catch (IOException e) {
-            System.err.println("Could not listen on port: " + getPort());
-            System.exit(1);
-        }
-        return serverSocket;
-    }
-
-    public static Socket receiveRequest(ServerSocket serverSocket) {
-
-        Socket request = null;
-        try {
-            System.out.println("Ready to receive...");
-            request = serverSocket.accept();
-        } catch (IOException e) {
-            System.err.println("Accept failed.");
-            System.exit(1);
-        }
-        return request;
-    }
-
-    public static void init(){
-        try {
-            listaURLHandler = new HashMap<String, Handler>();
-            Reflections reflections = new Reflections("app");
-            Set<Class<? extends Object>> classes= reflections.getTypesAnnotatedWith(Web.class);
-            //System.out.println(classes.toString());
-            for(Class<?> c:classes) {
-                receive(c.getName());
-            }
-        } catch (Exception e) {
-            // TODO Auto-generated catch block
-            e.printStackTrace();
-        }
-
-    }
-
-    public static void receive(String direccion){
+    public void receive(String direccion){
         try {
             Class<?> c= Class.forName(direccion);
             Method[] listM= c.getDeclaredMethods();
@@ -238,5 +216,21 @@ public class HttpServerWithThread {
         } catch (Exception e) {
             e.printStackTrace();
         }
+    }
+
+    public void init(){
+        try {
+            listaURLHandler = new HashMap<String, Handler>();
+            Reflections reflections = new Reflections("app");
+            Set<Class<? extends Object>> classes= reflections.getTypesAnnotatedWith(Web.class);
+            //System.out.println(classes.toString());
+            for(Class<?> c:classes) {
+                receive(c.getName());
+            }
+        } catch (Exception e) {
+            // TODO Auto-generated catch block
+            e.printStackTrace();
+        }
+
     }
 }
