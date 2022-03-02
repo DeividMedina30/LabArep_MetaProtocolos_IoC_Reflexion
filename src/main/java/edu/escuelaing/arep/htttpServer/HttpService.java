@@ -10,6 +10,13 @@ import java.net.Socket;
 import java.util.HashMap;
 import java.util.Set;
 
+/**
+ * Esta clase define el httpService
+ * @author: Deivid Medina
+ * @version: 02/03/2022
+ */
+
+
 public class HttpService {
     private static Socket socketCliente;
     private static HashMap<String, Handler> listaURLHandler;
@@ -18,7 +25,10 @@ public class HttpService {
     private Socket receptor;
     private static String direccion = "";
 
-
+    /**
+     * Clase que me mantiene siempre la escucha, ya que se tiene un while true.
+     * @throws Exception - Control de excepciones.
+     */
     public void listen() throws Exception{
         while (true){
             socketServer = runServer();
@@ -31,6 +41,10 @@ public class HttpService {
         }
     }
 
+    /**
+     * Clase que me permite obtener el puerto además de empezar a escuchar.
+     * @return ServerSocket - retorna el nuevo puerto.
+     */
     public static ServerSocket runServer() {
         ServerSocket serverSocket = null;
         try {
@@ -42,6 +56,11 @@ public class HttpService {
         return serverSocket;
     }
 
+    /**
+     * Clase que permite que el Socket se prepare para recibir las solicitudes.
+     * @param serverSocket - Se le envía un ServerSocket
+     * @return request - Donde puede ser valida la conexión fallida.
+     */
     public static Socket recibiendoSolicitud(ServerSocket serverSocket) {
 
         Socket request = null;
@@ -55,6 +74,10 @@ public class HttpService {
         return request;
     }
 
+    /**
+     * Clase que me retorna el puerto por el cual heroku se ejecute.
+     * @return - Retorna por defecto el puerto 4567
+     */
     public static int getPort() {
         if (System.getenv("PORT") != null) {
             return Integer.parseInt(System.getenv("PORT"));
@@ -62,6 +85,11 @@ public class HttpService {
         return 4567; //returns default port if heroku-port isn't set (i.e. on localhost)
     }
 
+    /**
+     * Clase que me permite manejar los diferentes tipos de solicitudes que me soliciten.
+     * @param recep - Entre las posibles opciones de solicitudes tenemos /app,.png y .html.
+     * @throws IOException - Control de excepciones.
+     */
     private void leyendoTipodeSolicitud(Socket recep) throws IOException {
         socketCliente = recep;
         if(direccion.contains("/app")){
@@ -76,6 +104,11 @@ public class HttpService {
 
     }
 
+    /**
+     * Función que me permite realizar la lectura de una imagen a tra vez de byte.
+     * @return byte - retorna los byte de la imagen que se este solicitando.
+     * @throws MalformedURLException - Control de excepciones.
+     */
     public static byte[] leerImagenPng() throws MalformedURLException {
         byte[] imageBytes = null;
         try {
@@ -89,6 +122,12 @@ public class HttpService {
         return imageBytes;
     }
 
+    /**
+     * Función que me permite leer un html correspondiente y así hacer uso de él.
+     * @param address - Nombre del html que se esta solicitando.
+     * @return Retorna un string el cual contiene toda la información relacionada con el html.
+     * @throws MalformedURLException - Control de excepciones
+     */
     public static String leerHTML(String address) throws MalformedURLException {
         String html = "";
         try {
@@ -104,6 +143,9 @@ public class HttpService {
         return html;
     }
 
+    /**
+     * En caso de no encontrar un recurso, se hace uso del html, paginaNoencontrada. que muestra una imagen de error.
+     */
     private void paginaNoEncontrada() {
         try{
             String outputLine;
@@ -119,6 +161,9 @@ public class HttpService {
         }
     }
 
+    /**
+     * Clase que me permite realizar la conexión a peticiones html.
+     */
     private void postHtml() {
         try{
             String outputLine;
@@ -135,6 +180,9 @@ public class HttpService {
         }
     }
 
+    /**
+     * Clase que me permite realizar la conexión a peticiones de imagenes en formato PNG.
+     */
     private void postPng() {
         try {
             byte[] imagen;
@@ -153,6 +201,10 @@ public class HttpService {
         }
     }
 
+    /**
+     * Clase que me permite realizar el llamado correspondientes a diferentes apps que se estén manejando.
+     * @throws IOException - Control de excepciones.
+     */
     private void postApplicacion() throws IOException {
         PrintWriter out = new PrintWriter(socketCliente.getOutputStream(), true); //PrintWriter imprime representaciones formateadas de objetos en una secuencia como una salida de texto.
         int limit = direccion.indexOf("/app");
@@ -186,6 +238,10 @@ public class HttpService {
         }
     }
 
+    /**
+     * Clase que me permite empezar a escuchar las peticiones.
+     * @throws IOException - Control de excepciones.
+     */
     private void empezarAEscuchar() throws IOException {
         in = new BufferedReader(new InputStreamReader(receptor.getInputStream()));
         String inputline;
@@ -201,6 +257,11 @@ public class HttpService {
         }
     }
 
+    /**
+     * Clase que permite que el Socket se prepare para recibir las solicitudes.
+     * @param serverSocket - Se le envía un ServerSocket
+     * @return request - Donde puede ser valida la conexión fallida.
+     */
     public void receive(String direccion){
         try {
             Class<?> c= Class.forName(direccion);
@@ -218,6 +279,9 @@ public class HttpService {
         }
     }
 
+    /**
+     * Esta clase me permite inicializar el atributo listaURLHandler. La cual tendra todos los métodos del package app.
+     */
     public void init(){
         try {
             listaURLHandler = new HashMap<String, Handler>();
