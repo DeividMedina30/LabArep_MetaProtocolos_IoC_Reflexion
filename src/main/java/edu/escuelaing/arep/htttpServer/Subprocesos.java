@@ -13,7 +13,7 @@ public class Subprocesos {
     public static void start() throws IOException {
         for (;;) {
             serverSocket = HttpService.runServer();
-            Socket clientSocket = HttpService.recibiendoSolicitud(serverSocket);
+            Socket clientSocket = HttpService.receiveRequest(serverSocket);
             executorService.execute((Runnable) new HttpServerWithThread(clientSocket));
             serverSocket.close();
 
