@@ -211,7 +211,7 @@ public class HttpServerWithThread {
     public static byte[] readImage(String address) throws MalformedURLException {
         byte[] imageBytes = null;
         try {
-            File image = new File("src/main/java/app/images"+address);
+            File image = new File("src/main/java/app/imagenesPng"+address);
             FileInputStream inputImage = new FileInputStream(image);
             imageBytes = new byte[(int) image.length()];
             inputImage.read(imageBytes);
