@@ -19,7 +19,7 @@ public class Handler {
 
     public  String procesar(Object[] arg) {
         try {
-            return metodo.invoke(metodo, arg).toString();
+            return metodo.invoke(metodo, arg).toString(); //Estamos invocando lso metodos o metodo del objeto metodo
         } catch (Exception e) {
             e.printStackTrace();
             return e.getMessage();
