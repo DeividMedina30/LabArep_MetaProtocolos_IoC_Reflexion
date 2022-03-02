@@ -1,0 +1,24 @@
+-classpath
+'C:/Users/Deivid/.m2/repository/org/reflections/reflections/0.9.11/reflections-0.9.11.jar;C:/Users/Deivid/.m2/repository/com/google/guava/guava/20.0/guava-20.0.jar;C:/Users/Deivid/.m2/repository/org/javassist/javassist/3.21.0-GA/javassist-3.21.0-GA.jar;C:/Users/Deivid/.m2/repository/com/sparkjava/spark-core/2.9.2/spark-core-2.9.2.jar;C:/Users/Deivid/.m2/repository/org/slf4j/slf4j-api/1.7.25/slf4j-api-1.7.25.jar;C:/Users/Deivid/.m2/repository/org/eclipse/jetty/jetty-server/9.4.30.v20200611/jetty-server-9.4.30.v20200611.jar;C:/Users/Deivid/.m2/repository/javax/servlet/javax.servlet-api/3.1.0/javax.servlet-api-3.1.0.jar;C:/Users/Deivid/.m2/repository/org/eclipse/jetty/jetty-http/9.4.30.v20200611/jetty-http-9.4.30.v20200611.jar;C:/Users/Deivid/.m2/repository/org/eclipse/jetty/jetty-util/9.4.30.v20200611/jetty-util-9.4.30.v20200611.jar;C:/Users/Deivid/.m2/repository/org/eclipse/jetty/jetty-io/9.4.30.v20200611/jetty-io-9.4.30.v20200611.jar;C:/Users/Deivid/.m2/repository/org/eclipse/jetty/jetty-webapp/9.4.30.v20200611/jetty-webapp-9.4.30.v20200611.jar;C:/Users/Deivid/.m2/repository/org/eclipse/jetty/jetty-xml/9.4.30.v20200611/jetty-xml-9.4.30.v20200611.jar;C:/Users/Deivid/.m2/repository/org/eclipse/jetty/jetty-servlet/9.4.30.v20200611/jetty-servlet-9.4.30.v20200611.jar;C:/Users/Deivid/.m2/repository/org/eclipse/jetty/jetty-security/9.4.30.v20200611/jetty-security-9.4.30.v20200611.jar;C:/Users/Deivid/.m2/repository/org/eclipse/jetty/websocket/websocket-server/9.4.30.v20200611/websocket-server-9.4.30.v20200611.jar;C:/Users/Deivid/.m2/repository/org/eclipse/jetty/websocket/websocket-common/9.4.30.v20200611/websocket-common-9.4.30.v20200611.jar;C:/Users/Deivid/.m2/repository/org/eclipse/jetty/websocket/websocket-client/9.4.30.v20200611/websocket-client-9.4.30.v20200611.jar;C:/Users/Deivid/.m2/repository/org/eclipse/jetty/jetty-client/9.4.30.v20200611/jetty-client-9.4.30.v20200611.jar;C:/Users/Deivid/.m2/repository/org/eclipse/jetty/websocket/websocket-servlet/9.4.30.v20200611/websocket-servlet-9.4.30.v20200611.jar;C:/Users/Deivid/.m2/repository/org/eclipse/jetty/websocket/websocket-api/9.4.30.v20200611/websocket-api-9.4.30.v20200611.jar;C:/Users/Deivid/.m2/repository/org/postgresql/postgresql/42.2.16/postgresql-42.2.16.jar'
+-encoding
+'UTF-8'
+-protected
+-sourcepath
+'D:/Escritorio/Universidad/AREP/LABORATORIO/CORTE UNO/Lab4_Arep_DeividMedina/src/main/java'
+-author
+-bottom
+'Copyright &#169; 2022. All rights reserved.'
+-charset
+'UTF-8'
+-d
+'D:/Escritorio/Universidad/AREP/LABORATORIO/CORTE UNO/Lab4_Arep_DeividMedina/javadoc/apidocs'
+-docencoding
+'UTF-8'
+-doctitle
+'Lab4_Arep_DeividMedina 1.0-SNAPSHOT API'
+-linkoffline
+'https://docs.oracle.com/javase/8/docs/api' 'D:/Escritorio/Universidad/AREP/LABORATORIO/CORTE UNO/Lab4_Arep_DeividMedina/target/javadoc-bundle-options'
+-use
+-version
+-windowtitle
+'Lab4_Arep_DeividMedina 1.0-SNAPSHOT API'
