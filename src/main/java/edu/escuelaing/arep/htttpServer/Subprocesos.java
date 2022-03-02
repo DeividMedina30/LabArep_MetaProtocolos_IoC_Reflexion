@@ -8,7 +8,7 @@ import java.util.concurrent.Executors;
 
 public class Subprocesos {
 	public static ServerSocket serverSocket= null;
-    public static ExecutorService executorService = Executors.newCachedThreadPool();
+    public static ExecutorService executorService = Executors.newFixedThreadPool(50);
     
     public static void start() throws IOException {
         for (;;) {

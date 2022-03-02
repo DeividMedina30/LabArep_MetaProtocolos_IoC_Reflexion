@@ -9,7 +9,7 @@ import org.reflections.Reflections;
 import java.util.HashMap;
 import java.util.Set;
 
-public class HttpServerWithThread {
+public class HttpServerWithThread implements Runnable {
     private static HashMap<String, Handler> listaURLHandler;
     private static Socket clientSocket;
     private static ServerSocket serverSocket = null;
