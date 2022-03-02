@@ -79,7 +79,7 @@ public class HttpService {
     public static byte[] leerImagenPng() throws MalformedURLException {
         byte[] imageBytes = null;
         try {
-            File imagen = new File("src/main/java/arep/resource/imagenesPng"+direccion);
+            File imagen = new File("src/main/java/app/imagenesPng"+direccion);
             FileInputStream inputImage = new FileInputStream(imagen); // Es útil para leer datos del tipo primitivo de una forma portable.
             imageBytes = new byte[(int) imagen.length()]; //Obteniendo longitud de la imagen en bytes
             inputImage.read(imageBytes); //Leyendo la imagen
@@ -92,7 +92,7 @@ public class HttpService {
     public static String leerHTML(String address) throws MalformedURLException {
         String html = "";
         try {
-            FileReader file = new FileReader("src/main/java/arep/resource/html"+address);
+            FileReader file = new FileReader("ssrc/main/java/app/html"+address);
             BufferedReader reader = new BufferedReader(file);
             String inputLine = "";
             while ((inputLine = reader.readLine()) != null) {
