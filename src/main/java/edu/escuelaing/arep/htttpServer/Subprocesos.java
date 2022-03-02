@@ -7,14 +7,14 @@ import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
 
 public class Subprocesos {
+	public static ServerSocket serverSocket= null;
     public static ExecutorService executorService = Executors.newCachedThreadPool();
-    public static ServerSocket serverSocket= null;
-
+    
     public static void start() throws IOException {
         for (;;) {
             serverSocket = HttpService.runServer();
             Socket clientSocket = HttpService.receiveRequest(serverSocket);
-            executorService.execute((Runnable) new HttpServerWithThread(clientSocket));
+            executorService.execute(new HttpServerWithThread(clientSocket));
             serverSocket.close();
 
         }
