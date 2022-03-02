@@ -34,7 +34,7 @@ public class calculadora {
                 +"  <title>Proyecto AREM</title>  \n"
                 +"</head>\n"
                 +"<body style=\"text-align: center\">   \n"
-                + "<h1>Resultado de la Suma de: "+valorUno+" + "+valorDos+" es igual a: "+resultadoSubstracion+"  </h1>"
+                + "<h1>Resultado de la Resta de: "+valorUno+" - "+valorDos+" es igual a: "+resultadoSubstracion+"  </h1>"
                 +"</body>\n"
                 +"</html>\n"
                 +"";
