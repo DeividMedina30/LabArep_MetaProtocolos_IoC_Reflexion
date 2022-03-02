@@ -63,7 +63,9 @@ entregar su trabajo al final del laboratorio.
 
 #### Respuesta a las siguientes apps.
 
-- Se encuentra en construcción.
+- `<App que suma dos números>` : <https://labcuatroarep.herokuapp.com/app/calculadoraSumar>
+
+- `<App que resta dos números>` : <https://labcuatroarep.herokuapp.com/app/calculadoraRestar>
 
 ### TECNOLOGÍAS USADAS PARA EL DESARROLLO DEL LABORATORIO.
 
