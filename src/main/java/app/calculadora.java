@@ -5,7 +5,7 @@ import edu.escuelaing.arep.htttpServer.Web;
 public class calculadora {
 
     @Web("resultadoSuma")
-    public static String resultadoSumallamar(String valorUno, int valorDos){
+    public static String resultadoSumallamar(String valorUno, String valorDos){
         return"<!DOCTYPE html>\n"
                 +"<html>\n"
                 +"<head>\n"
