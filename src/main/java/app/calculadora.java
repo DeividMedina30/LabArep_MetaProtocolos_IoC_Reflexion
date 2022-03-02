@@ -26,7 +26,7 @@ public class calculadora {
     public static String resultadoRestallamar(String valorUno, String valorDos){
         int numeroUno = Integer.parseInt (valorUno);
         int numeroDos = Integer.parseInt (valorDos);
-        String resultadoSubstracion = String.valueOf(numeroUno+numeroDos);
+        String resultadoSubstracion = String.valueOf(numeroUno-numeroDos);
         return"<!DOCTYPE html>\n"
                 +"<html>\n"
                 +"<head>\n"
@@ -81,7 +81,7 @@ public class calculadora {
                 + "  <input id='calculadoraIdnumeroDos' type='number' name='segundonumero' class='form-control' placeholder='Ingrese el segundo número a restar.' >"
                 + "<br>"
                 + "<br>"
-                + "  <input id='calculadora_button_id' type='submit' value='Realizar la suma' class='btns'>"
+                + "  <input id='calculadora_button_id' type='submit' value='Realizar la resta' class='btns'>"
                 +"</form>"
                 +"</body>\n"
                 +"</html>\n"
