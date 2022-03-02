@@ -11,46 +11,27 @@ import java.util.HashMap;
 import java.util.Set;
 
 public class HttpService {
-
+    private static Socket socketCliente;
     private static HashMap<String, Handler> listaURLHandler;
-    private static Socket clientSocket;
-    private static ServerSocket serverSocket = null;
-    private static String address = "";
+    private static ServerSocket socketServer = null;
     private static BufferedReader in;
-    private static Socket receiver;
-
+    private Socket receptor;
+    private static String direccion = "";
 
 
     public void listen() throws Exception{
         while (true){
-            serverSocket = runServer();
-            receiver = receiveRequest(serverSocket);
-            setRequest(receiver);
-            postType(address,receiver);
-            closeInput();
-            receiver.close();
-            serverSocket.close();
+            socketServer = runServer();
+            receptor = recibiendoSolicitud(socketServer);
+            empezarAEscuchar();
+            leyendoTipodeSolicitud(receptor);
+            in.close();
+            receptor.close();
+            socketServer.close();
         }
-    }
-
-    public void init(){
-        try {
-            listaURLHandler = new HashMap<String, Handler>();
-            Reflections reflections = new Reflections("app");
-            Set<Class<? extends Object>> classes= reflections.getTypesAnnotatedWith(Web.class);
-            //System.out.println(classes.toString());
-            for(Class<?> c:classes) {
-                receive(c.getName());
-            }
-        } catch (Exception e) {
-            // TODO Auto-generated catch block
-            e.printStackTrace();
-        }
-
     }
 
     public static ServerSocket runServer() {
-
         ServerSocket serverSocket = null;
         try {
             serverSocket = new ServerSocket(getPort());
@@ -61,7 +42,7 @@ public class HttpService {
         return serverSocket;
     }
 
-    public static Socket receiveRequest(ServerSocket serverSocket) {
+    public static Socket recibiendoSolicitud(ServerSocket serverSocket) {
 
         Socket request = null;
         try {
@@ -74,132 +55,46 @@ public class HttpService {
         return request;
     }
 
-    public static void postType(String address, Socket cs) throws Exception{
-        clientSocket = cs;
-        System.out.println("POST: " + address);
-        if (address.contains("/app")) {
-            postApp(address);
-        }else if (address.contains(".html")){
-            postHtml(address);
-        }else if (address.contains(".png")){
-            postImage(address);
+    public static int getPort() {
+        if (System.getenv("PORT") != null) {
+            return Integer.parseInt(System.getenv("PORT"));
+        }
+        return 4567; //returns default port if heroku-port isn't set (i.e. on localhost)
+    }
+
+    private void leyendoTipodeSolicitud(Socket recep) throws IOException {
+        socketCliente = recep;
+        if(direccion.contains("/app")){
+            postApplicacion();
+        }else if (direccion.contains(".png")){
+            postPng();
+        } else if (direccion.contains(".html")) {
+            postHtml();
         }else{
-            notFound404();
+            paginaNoEncontrada();
         }
+
     }
 
-
-    private static void postHtml(String request){
-        try{
-            String outputLine;
-            String page = "HTTP/1.1 200 OK\r\n" +
-                    "Content-Type: text/html\r\n" +
-                    "\r\n" + readHTML(request);
-            outputLine = page;
-            PrintWriter out = new PrintWriter(clientSocket.getOutputStream(), true);
-            out.println(outputLine);
-            out.close();
-        }catch (Exception ex){
-            notFound404();
-            System.err.println("Error: Archivo no encontrado");
-        }
-    }
-
-    private static void postApp(String address) throws IOException {
-        PrintWriter out = new PrintWriter(clientSocket.getOutputStream(), true);
-        int limit = address.indexOf("/app");
-        String resource = "";
-        for (int k = limit; k < address.length() && address.charAt(k) != ' '; k++) {resource += address.charAt(k);}
+    public static byte[] leerImagenPng() throws MalformedURLException {
+        byte[] imageBytes = null;
         try {
-            out.write("HTTP/1.1 200 OK\r\n" + "Content-Type: text/html\r\n" + "\r\n");
-            if(resource.contains("?")) {
-                System.out.println("Entro al primero");
-                int i = resource.indexOf("?");
-                String params=resource.substring(i+1);
-                if(resource.contains("&")) {
-                    String[] arrayP= params.split("&");
-                    Object [] objects=new Object[arrayP.length];
-                    int w=0;
-                    for(String p: arrayP) {
-                        objects[w]=p.split("=")[1];
-                        w++;
-                    }
-                    out.write(listaURLHandler.get(resource.substring(0, i)).procesar(objects));
-                }else {
-                    String other=resource.split("=")[1];
-                    out.write(listaURLHandler.get(resource.substring(0, i)).procesar(new Object[]{other}));
-                }
-            }
-            else {
-                out.write(listaURLHandler.get(resource).procesar());}
-            out.close();
-        } catch (Exception e) {
-            notFound404();
-            System.err.println("Error: No es posible cargar el recurso " + address);
+            File imagen = new File("src/main/java/app//imagenesPng"+direccion);
+            FileInputStream inputImage = new FileInputStream(imagen); // Es útil para leer datos del tipo primitivo de una forma portable.
+            imageBytes = new byte[(int) imagen.length()]; //Obteniendo longitud de la imagen en bytes
+            inputImage.read(imageBytes); //Leyendo la imagen
+        } catch (IOException io) {
+            System.err.println(io);
         }
+        return imageBytes;
     }
 
-    private static void postImage(String address){
-        try {
-            byte[] imageBytes;
-            imageBytes = readImage(address);
-            DataOutputStream imageCode;
-            imageCode = new DataOutputStream(clientSocket.getOutputStream());
-            imageCode.writeBytes("HTTP/1.1 200 OK \r\n");
-            imageCode.writeBytes("Content-Type: image/png\r\n");
-            imageCode.writeBytes("Content-Length: " + imageBytes.length);
-            imageCode.writeBytes("\r\n\r\n");
-            //La imagen se hace visible en el servidor
-            imageCode.write(imageBytes);
-            imageCode.close();
-        } catch (IOException ex){
-
-            notFound404();
-            System.err.println("Error: No se encontro la imagen");
-        }
-    }
-
-    private static void notFound404(){
-        try{
-            String outputLine;
-            String page = "HTTP/1.1 200 OK\r\n" +
-                    "Content-Type: text/html\r\n" +
-                    "\r\n" + readHTML("/notfound.html");
-
-            outputLine = page;
-            PrintWriter out = new PrintWriter(clientSocket.getOutputStream(), true);
-            out.println(outputLine);
-            out.close();
-        }catch (IOException ex){
-            System.err.println("Error en notFound");
-        }
-    }
-
-    public static void setRequest(Socket clientSocket) throws IOException{
-        in = new BufferedReader(new InputStreamReader(clientSocket.getInputStream()));
-        String inputLine;
-        while ((inputLine = in.readLine()) != null) {
-            System.out.println("Received: " + inputLine);
-            if (!in.ready()) {
-                break;
-            }
-            if(inputLine.contains("GET")){
-                address = inputLine.split(" ")[1];
-            }
-        }
-    }
-
-    public void closeInput() throws IOException {
-        in.close();
-    }
-
-    public static String readHTML(String address) throws MalformedURLException {
+    public static String leerHTML(String address) throws MalformedURLException {
         String html = "";
         try {
-            FileReader file = new FileReader("src/main/java/app/html"+address);
+            FileReader file = new FileReader("src/main/java/app//html"+address);
             BufferedReader reader = new BufferedReader(file);
             String inputLine = "";
-
             while ((inputLine = reader.readLine()) != null) {
                 html += inputLine + "\n";
             }
@@ -209,21 +104,102 @@ public class HttpService {
         return html;
     }
 
-
-    public static byte[] readImage(String address) throws MalformedURLException {
-        byte[] imageBytes = null;
-        try {
-            File image = new File("src/main/java/app/imagenesPng"+address);
-            FileInputStream inputImage = new FileInputStream(image);
-            imageBytes = new byte[(int) image.length()];
-            inputImage.read(imageBytes);
-
-        } catch (IOException io) {
-            System.err.println(io);
+    private void paginaNoEncontrada() {
+        try{
+            String outputLine;
+            String page = "HTTP/1.1 200 OK\r\n"
+                    + "Content-Type: text/html\r\n"
+                    + "\r\n" + leerHTML("/paginaNoEncontrada.html");
+            outputLine = page;  //Guardando Html
+            PrintWriter out = new PrintWriter(socketCliente.getOutputStream(), true); //Imprimir objeto en una secuencia como una salida de texto
+            out.println(outputLine); //Imprimir Pagina html
+            out.close();  //Cerrar Conexión
+        }catch (IOException ex){
+            System.err.println("Error en la solicitud.");
         }
-        return imageBytes;
     }
 
+    private void postHtml() {
+        try{
+            String outputLine;
+            String page ="HTTP/1.1 200 OK\r\n"
+                    + "Content-Type: text/html\r\n"
+                    + "\r\n" + leerHTML(direccion);
+            outputLine = page;  //Guardando Html
+            PrintWriter out = new PrintWriter(socketCliente.getOutputStream(), true); //Imprimir objeto en una secuencia como una salida de texto
+            out.println(outputLine); //Imprimir Pagina html
+            out.close();  //Cerrar Conexión
+        }catch (Exception ex){
+            paginaNoEncontrada();
+            System.err.println("Error: Archivo html indicado, no se encuentra.");
+        }
+    }
+
+    private void postPng() {
+        try {
+            byte[] imagen;
+            imagen = leerImagenPng();
+            DataOutputStream imageCode;
+            imageCode = new DataOutputStream(socketCliente.getOutputStream()); //útil para escribir datos del tipo primitivo de una forma portable.
+            imageCode.writeBytes("HTTP/1.1 200 OK \r\n");
+            imageCode.writeBytes("Content-Type: image/png\r\n");
+            imageCode.writeBytes("Content-Length: " + imagen.length);
+            imageCode.writeBytes("\r\n\r\n");
+            imageCode.write(imagen); //La imagen se hace visible en el servidor
+            imageCode.close();
+        } catch (IOException ex){
+            paginaNoEncontrada();
+            System.err.println("Error: No se pudo obtener la imagen solicitada.");
+        }
+    }
+
+    private void postApplicacion() throws IOException {
+        PrintWriter out = new PrintWriter(socketCliente.getOutputStream(), true); //PrintWriter imprime representaciones formateadas de objetos en una secuencia como una salida de texto.
+        int limit = direccion.indexOf("/app");
+        String resource = "";
+        for (int i = limit; i < direccion.length() && direccion.charAt(i) != ' '; i++) { //charAt: devuelve en un nuevo String el carácter UTF-16 de una cadena.
+            resource += direccion.charAt(i);
+        }
+        try {
+            out.write("HTTP/1.1 200 OK\r\n" + "Content-Type: text/html\r\n" + "\r\n");
+            if(resource.contains("?")) {
+                int i = resource.indexOf("?");
+                String params=resource.substring(i+1);
+                if(resource.contains("&")) {
+                    String[] arrayP= params.split("&");
+                    Object [] objects=new Object[arrayP.length];
+                    int j=0;
+                    for(String p: arrayP) {
+                        objects[j]=p.split("=")[1];
+                        j++;
+                    }
+                    out.write(listaURLHandler.get(resource.substring(0, i)).procesar(objects));
+                }else {
+                    String other=resource.split("=")[1];
+                    out.write(listaURLHandler.get(resource.substring(0, i)).procesar(new Object[]{other}));
+                }
+            }else { out.write(listaURLHandler.get(resource).procesar());}
+            out.close();
+        } catch (Exception e) {
+            paginaNoEncontrada();
+            System.err.println("Error: El recurso solicitado no existe o no se pudo cargar.");
+        }
+    }
+
+    private void empezarAEscuchar() throws IOException {
+        in = new BufferedReader(new InputStreamReader(receptor.getInputStream()));
+        String inputline;
+        String [] outpuline;
+        while((inputline = in.readLine()) != null){
+            if(!in.ready()){
+                break;
+            }
+            if(inputline.contains("GET")){
+                outpuline = inputline.split(" ");
+                direccion = outpuline[1];
+            }
+        }
+    }
 
     public void receive(String direccion){
         try {
@@ -242,10 +218,19 @@ public class HttpService {
         }
     }
 
-    public static int getPort() {
-        if (System.getenv("PORT") != null) {
-            return Integer.parseInt(System.getenv("PORT"));
+    public void init(){
+        try {
+            listaURLHandler = new HashMap<String, Handler>();
+            Reflections reflections = new Reflections("app");
+            Set<Class<? extends Object>> classes= reflections.getTypesAnnotatedWith(Web.class);
+            //System.out.println(classes.toString());
+            for(Class<?> c:classes) {
+                receive(c.getName());
+            }
+        } catch (Exception e) {
+            // TODO Auto-generated catch block
+            e.printStackTrace();
         }
-        return 4567; //returns default port if heroku-port isn't set (i.e. on localhost)
+
     }
 }
