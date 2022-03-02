@@ -43,13 +43,13 @@ entregar su trabajo al final del laboratorio.
 -  Una vez comprobado de que contamos con git. pasamos a escribir el siguiente comando. git clone,
    que significa que clonamos el repositorio, y damos la url del repositorio.
 
-`$ git clone https://github.com/DeividMedina30/TALLER-CLIENTES-Y-SERVICIOS.git`
+`$ git clone https://github.com/DeividMedina30/LabArep_MetaProtocolos_IoC_Reflexion.git`
 
 ![Imagen6.png](https://i.postimg.cc/gjkHY0Zf/Imagen6.png)
 
 - Luego podemos acceder al proyecto escribiendo.
 
-`$ cd TALLER-CLIENTES-Y-SERVICIOS`
+`$ cd Lab4_Arep_DeividMedina`
 
 ![Imagen7.png](https://i.postimg.cc/ZKnx2CZN/Imagen7.png)
 
