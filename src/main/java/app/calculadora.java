@@ -16,7 +16,7 @@ public class calculadora {
                 + "<h1>Calculadora que suma dos números </h1>"
                 +"<form action=\"/app/ejemplo\">	\n"
                 + "  <input id='calculadoraId' type='number' name='primernumero' class='form-control' placeholder='Ingrese el número a sumar' >"
-                + "  <input id='calculadora_button_id' type='button' value='Realizar la suma' class='btns' action=\"/app/ejemplo\">"
+                + "  <input id='calculadora_button_id' type='submit' value='Realizar la suma' class='btns' action=\"/app/ejemplo\">"
                 +"</form>"
                 +"</body>\n"
                 +"</html>\n"
